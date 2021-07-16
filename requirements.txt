@@ -1,0 +1,5 @@
+scipy==1.7.0
+seaborn
+pycocotools
+tensorboard
+pytorch-fid

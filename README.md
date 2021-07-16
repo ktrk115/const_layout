@@ -2,7 +2,7 @@
 
 This repository provides the official code for the paper "Constrained Graphic Layout Generation via Latent Optimization", especially the following code:
 
--   [TODO] The training code for our generative adversarial networks for layout, **LayoutGAN++**.
+-   The training code for our generative adversarial networks for layout, **LayoutGAN++**.
 -   [TODO] The code to generate layouts that satisfy the given constraints by our framework, **CLG-LO**.
 -   [TODO] The evaluation code to compute the metric of **Layout FID** from a set of bounding boxes.
 
@@ -22,13 +22,13 @@ This repository provides the official code for the paper "Constrained Graphic La
     conda activate const_layout
     ```
 
-3. Install the dependent Python libraries
+3. Install [PyTorch 1.8.\*](https://pytorch.org/get-started/locally/) and the corresponding versoin of [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html)
+
+4. Install the other dependent libraries
 
     ```bash
     pip install -r requirements.txt
     ```
-
-4. Install `torch-geometric` for PyTorch 1.8 following the [documentation](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html).
 
 ## Development environment
 

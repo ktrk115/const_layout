@@ -1,0 +1,6 @@
+__pycache__
+.ipynb_checkpoints
+.vscode
+
+data/dataset
+output
