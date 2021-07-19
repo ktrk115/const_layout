@@ -132,3 +132,54 @@ def compute_maximum_iou(layouts_1, layouts_2, n_jobs=None):
         scores = p.map(__compute_maximum_iou, args)
     scores = np.asarray(list(chain.from_iterable(scores)))
     return scores.mean().item()
+
+
+def compute_overlap(bbox, mask):
+    # Attribute-conditioned Layout GAN
+    # 3.6.3 Overlapping Loss
+
+    bbox = bbox.masked_fill(~mask.unsqueeze(-1), 0)
+    bbox = bbox.permute(2, 0, 1)
+
+    l1, t1, r1, b1 = convert_xywh_to_ltrb(bbox.unsqueeze(-1))
+    l2, t2, r2, b2 = convert_xywh_to_ltrb(bbox.unsqueeze(-2))
+    a1 = (r1 - l1) * (b1 - t1)
+
+    # intersection
+    l_max = torch.maximum(l1, l2)
+    r_min = torch.minimum(r1, r2)
+    t_max = torch.maximum(t1, t2)
+    b_min = torch.minimum(b1, b2)
+    cond = (l_max < r_min) & (t_max < b_min)
+    ai = torch.where(cond, (r_min - l_max) * (b_min - t_max),
+                     torch.zeros_like(a1[0]))
+
+    diag_mask = torch.eye(a1.size(1), dtype=torch.bool,
+                          device=a1.device)
+    ai = ai.masked_fill(diag_mask, 0)
+
+    ar = torch.nan_to_num(ai / a1)
+
+    return ar.sum(dim=(1, 2)) / mask.float().sum(-1)
+
+
+def compute_alignment(bbox, mask):
+    # Attribute-conditioned Layout GAN
+    # 3.6.4 Alignment Loss
+
+    bbox = bbox.permute(2, 0, 1)
+    xl, yt, xr, yb = convert_xywh_to_ltrb(bbox)
+    xc, yc = bbox[0], bbox[1]
+    X = torch.stack([xl, xc, xr, yt, yc, yb], dim=1)
+
+    X = X.unsqueeze(-1) - X.unsqueeze(-2)
+    idx = torch.arange(X.size(2), device=X.device)
+    X[:, :, idx, idx] = 1.
+    X = X.abs().permute(0, 2, 1, 3)
+    X[~mask] = 1.
+    X = X.min(-1).values.min(-1).values
+    X.masked_fill_(X.eq(1.), 0.)
+
+    X = -torch.log(1 - X)
+
+    return X.sum(-1) / mask.float().sum(-1)
