@@ -79,7 +79,7 @@ If this repository helps your research, please consider citing our [paper](https
 
 ## Licence
 
-[TODO] add licence
+GNU AGPLv3
 
 ## Related repositories
 
