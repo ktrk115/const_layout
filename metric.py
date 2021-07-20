@@ -16,9 +16,8 @@ class LayoutFID():
         self.model = LayoutNet(num_label).to(device)
 
         # load pre-trained LayoutNet
-        tmpl = 'https://esslab.jp/~kotaro/files/const_layout/layoutnet-{}.pth'
-        state_dict = torch.hub.load_state_dict_from_url(
-            tmpl.format(dataset_name), map_location=device)
+        tmpl = './pretrained/layoutnet_{}.pth.tar'
+        state_dict = torch.load(tmpl.format(dataset_name), map_location=device)
         self.model.load_state_dict(state_dict)
         self.model.requires_grad_(False)
         self.model.eval()
