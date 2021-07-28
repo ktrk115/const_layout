@@ -4,10 +4,12 @@ from itertools import chain
 from scipy.optimize import linear_sum_assignment
 
 import torch
+from torch_geometric.utils import to_dense_adj
 from pytorch_fid.fid_score import calculate_frechet_distance
 
 from model.layoutnet import LayoutNet
 from util import convert_xywh_to_ltrb
+from data.util import RelSize, RelLoc, detect_size_relation, detect_loc_relation
 
 
 class LayoutFID():
@@ -182,3 +184,36 @@ def compute_alignment(bbox, mask):
     X = -torch.log(1 - X)
 
     return X.sum(-1) / mask.float().sum(-1)
+
+
+def compute_violation(bbox_flatten, data):
+    device = data.x.device
+    failures, valid = [], []
+
+    _zip = zip(data.edge_attr, data.edge_index.t())
+    for gt, (i, j) in _zip:
+        failure, _valid = 0, 0
+        b1, b2 = bbox_flatten[i], bbox_flatten[j]
+
+        # size relation
+        if ~gt & 1 << RelSize.UNKNOWN:
+            pred = detect_size_relation(b1, b2)
+            failure += (gt & 1 << pred).eq(0).long()
+            _valid += 1
+
+        # loc relation
+        if ~gt & 1 << RelLoc.UNKNOWN:
+            canvas = data.y[i].eq(0)
+            pred = detect_loc_relation(b1, b2, canvas)
+            failure += (gt & 1 << pred).eq(0).long()
+            _valid += 1
+
+        failures.append(failure)
+        valid.append(_valid)
+
+    failures = torch.as_tensor(failures).to(device)
+    failures = to_dense_adj(data.edge_index, data.batch, failures)
+    valid = torch.as_tensor(valid).to(device)
+    valid = to_dense_adj(data.edge_index, data.batch, valid)
+
+    return failures.sum((1, 2)) / valid.sum((1, 2))

@@ -3,3 +3,4 @@ seaborn
 pycocotools
 tensorboard
 pytorch-fid
+cma
