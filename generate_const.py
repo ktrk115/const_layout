@@ -29,8 +29,18 @@ def save_gif(out_path, j, netG,
              dataset_colors, canvas_size):
     mask = mask[j]
     _j = slice(j, j + 1)
+
+    z_before, z_filtered = None, []
+    for z in z_hist:
+        if z_before is not None:
+            if z_before.eq(z[_j]).all():
+                continue
+        z_filtered.append(z)
+        z_before = z[_j]
+    z_filtered += [z] * 2
+
     with tempfile.TemporaryDirectory() as tempdir:
-        for i, z in enumerate(z_hist):
+        for i, z in enumerate(z_filtered):
             bbox = netG(z[_j], label[_j], padding_mask[_j])
             b = bbox[0][mask].cpu().numpy()
             l = label[0][mask].cpu().numpy()
@@ -39,7 +49,7 @@ def save_gif(out_path, j, netG,
                 b, l, dataset_colors, canvas_size
             ).save(tempdir + f'/{j}_{i:08d}.png')
 
-        subprocess.run(['convert', '-layers', 'optimize',
+        subprocess.run(['convert', '-delay', '50',
                         tempdir + f'/{j}_*.png', str(out_path)])
 
 
@@ -133,10 +143,10 @@ def main():
         z = torch.randn(label.size(0), label.size(1),
                         train_args['latent_size'],
                         device=device)
-        z_hist = [z]
 
-        for i, z in enumerate(optimizer.generator(z, data)):
-            if i % 50 == 0 and len(results) < args.num_save:
+        z_hist = [z]
+        for z in optimizer.generator(z, data):
+            if len(results) < args.num_save:
                 z_hist.append(z)
 
         bbox = netG(z, label, padding_mask)
@@ -180,7 +190,7 @@ def main():
         print(f'Relation violation: {violation:.2%}')
 
     # save results
-    with out_path.open('wb') as fb:
+    with Path(args.out_path).open('wb') as fb:
         pickle.dump(results, fb)
     print('Generated layouts are saved at:', args.out_path)
 

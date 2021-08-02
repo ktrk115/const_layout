@@ -42,22 +42,62 @@ This repository provides the official code for the paper "Constrained Graphic La
 
 -   Ubuntu 18.04, CUDA 11.1
 
-## Generate layouts with LayoutGAN++
+## LayoutGAN++
+
+Architecture  
+![](assets/layoutganpp.png)
+
+Training animation  
+<img src="assets/rico_training.gif" width="165">
+
+### Generate layouts with LayoutGAN++
 
 ```bash
 python generate.py pretrained/layoutganpp_rico.pth.tar --out_path output/generated_layouts.pkl --num_save 5
 ```
 
-## Evaluate generate layouts
+### Train LayoutGAN++ model
+
+```bash
+python train.py --dataset rico --batch_size 64 --iteration 200000 --latent_size 4 --lr 1e-05 --G_d_model 256 --G_nhead 4 --G_num_layers 8 --D_d_model 256 --D_nhead 4 --D_num_layers 8
+```
+
+## CLG-LO
+
+|                        w/ beautification constraints                        |                          w/ relational constraints                          |
+| :-------------------------------------------------------------------------: | :-------------------------------------------------------------------------: |
+| ![](assets/optimizing_beautify_0.gif) ![](assets/optimizing_beautify_1.gif) | ![](assets/optimizing_relation_0.gif) ![](assets/optimizing_relation_1.gif) |
+
+### Generate layouts with beautification constraints
+
+```bash
+python generate_const.py pretrained/layoutganpp_publaynet.pth.tar --const_type beautify --out_path output/beautify/generated_layouts.pkl --num_save 5
+```
+
+### Generate layouts with relational constraints
+
+```bash
+python generate_const.py pretrained/layoutganpp_publaynet.pth.tar --const_type relation --out_path output/relation/generated_layouts.pkl --num_save 5
+```
+
+## Layout evaluation
+
+### Evaluate generated layouts
 
 ```bash
 python eval.py rico output/generated_layouts.pkl
 ```
 
-## Train LayoutGAN++ by yourself
+A pickle file should be a list of layouts, where each layout is a tuple of bounding boxes and labels. The bounding box is represented by [x, y, width, height] in normalized coordinates, and the label is represented by an index. An example is shown below.
 
-```bash
-python train.py --dataset rico --batch_size 64 --iteration 200000 --latent_size 4 --lr 1e-05 --G_d_model 256 --G_nhead 4 --G_num_layers 8 --D_d_model 256 --D_nhead 4 --D_num_layers 8
+```
+In [x]: layouts
+Out[x]:
+[(array([[0.47403812, 0.11276676, 0.6250037 , 0.02210438],
+         [0.49971417, 0.8550553 , 0.81388366, 0.03492427],
+         [0.49919674, 0.47857162, 0.81024694, 0.7070079 ]], dtype=float32),
+  array([0, 0, 3]),
+  ...
 ```
 
 ## Citation
