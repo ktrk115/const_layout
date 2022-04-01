@@ -108,11 +108,10 @@ If this repository helps your research, please consider citing our [paper](https
 @inproceedings{Kikuchi2021,
     title = {Constrained Graphic Layout Generation via Latent Optimization},
     author = {Kotaro Kikuchi and Edgar Simo-Serra and Mayu Otani and Kota Yamaguchi},
-    booktitle = {Proceedings of the ACM International Conference on Multimedia},
+    booktitle = {ACM International Conference on Multimedia},
     series = {MM '21},
-    volume = {},
     year = {2021},
-    pages = {},
+    pages = {88--96},
     doi = {10.1145/3474085.3475497}
 }
 ```
