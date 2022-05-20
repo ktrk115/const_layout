@@ -37,6 +37,9 @@ This repository provides the official code for the paper "Constrained Graphic La
     ```bash
     ./download_model.sh
     ```
+    
+7. Install [ImageMagick](https://imagemagick.org/) for visualization
+
 
 ## Development environment
 
