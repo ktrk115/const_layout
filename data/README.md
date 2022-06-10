@@ -10,7 +10,7 @@ mkdir $DATASET
 
 ## Download and place the datasets
 
-### [Rico](http://interactionmining.org/rico/)
+### [Rico](https://interactionmining.org/rico)
 
 1.  Download `rico_dataset_v0.1_semantic_annotations.zip` from "UI Screenshots and Hierarchies with Semantic Annotations" and decompress it.
 2.  Create the new directory `$DATASET/rico/raw/` and move the contents into it as shown below:
