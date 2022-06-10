@@ -22,7 +22,13 @@ This repository provides the official code for the paper "Constrained Graphic La
     conda activate const_layout
     ```
 
-3. Install [PyTorch 1.8.\*](https://pytorch.org/get-started/locally/) and the corresponding versoin of [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html)
+3. Install [PyTorch 1.8.1](https://pytorch.org/get-started/previous-versions/#v181) and [PyTorch Geometric 1.7.2](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html#installation-via-pip-wheels). An example of the PyG installation command is shown below.
+
+    ```bash
+    pip install torch-scatter==2.0.7 -f https://data.pyg.org/whl/torch-1.8.1+cu111.html
+    pip install torch-sparse==0.6.10 -f https://data.pyg.org/whl/torch-1.8.1+cu111.html
+    pip install torch-geometric==1.7.2
+    ```
 
 4. Install the other dependent libraries
 
