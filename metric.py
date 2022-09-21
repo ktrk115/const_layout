@@ -178,6 +178,8 @@ def compute_alignment(bbox, mask):
     X[:, :, idx, idx] = 1.
     X = X.abs().permute(0, 2, 1, 3)
     X[~mask] = 1.
+    X = X.permute(0, 3, 2, 1)
+    X[~mask] = 1.
     X = X.min(-1).values.min(-1).values
     X.masked_fill_(X.eq(1.), 0.)
 
