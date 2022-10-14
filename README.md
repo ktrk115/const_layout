@@ -113,7 +113,7 @@ Out[x]:
 
 If this repository helps your research, please consider citing our [paper](https://doi.org/10.1145/3474085.3475497).
 
-```
+```bibtex
 @inproceedings{Kikuchi2021,
     title = {Constrained Graphic Layout Generation via Latent Optimization},
     author = {Kotaro Kikuchi and Edgar Simo-Serra and Mayu Otani and Kota Yamaguchi},
