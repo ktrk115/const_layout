@@ -1,6 +1,6 @@
-scipy==1.7.0
-seaborn
-pycocotools
-tensorboard
-pytorch-fid
-cma
+scipy==1.7.2
+seaborn==0.11.2
+pycocotools==2.0.5
+tensorboard==2.6.0
+pytorch-fid==0.2.1
+cma==3.1.0
